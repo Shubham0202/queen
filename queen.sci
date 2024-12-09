@@ -1,48 +1,48 @@
 
-function isSafe(board, row, col, N)
+function solve_n_queens(n)
+    board = zeros(n, n);
+    if place_queen(board, 1, n) then
+        disp(board);
+    else
+        disp("No solution found.");
+    end
+endfunction
+
+function flag = place_queen(board, row, n)
+    if row > n then
+        flag = 1;
+        return;
+    end
+
+    for col = 1:n
+        if is_safe(board, row, col, n) then
+            board(row, col) = 1;
+            if place_queen(board, row + 1, n) then
+                flag = 1;
+                return;
+            end
+            board(row, col) = 0;
+        end
+    end
+    flag = 0;
+endfunction
+
+function flag = is_safe(board, row, col, n)
     for i = 1:row-1
         if board(i, col) == 1 then
-            return %F; // Return false if there's another queen in the same column
+            flag = 0;
+            return;
         end
-    end
-    for i = 1:row-1
         if col - (row - i) >= 1 & board(i, col - (row - i)) == 1 then
-            return %F; 
+            flag = 0;
+            return;
+        end
+        if col + (row - i) <= n & board(i, col + (row - i)) == 1 then
+            flag = 0;
+            return;
         end
     end
-    for i = 1:row-1
-        if col + (row - i) <= N & board(i, col + (row - i)) == 1 then
-            return %F; // Return false if there's another queen in the upper right diagonal
-        end
-    end
-    
-    return %T; 
+    flag = 1;
 endfunction
-function solveNQueens(board, row, N)
-    if row > N then
-        disp(board);
-        return %T; 
-    end
-    for col = 1:N
-        if isSafe(board, row, col, N) then
-            board(row, col) = 1; 
-            if solveNQueens(board, row + 1, N) then
-                return %T; // If the next row placement is successful, return true
-            end
-            board(row, col) = 0; // Remove the queen
-        end
-    end
-    
-    return %F; // If no position is found, return false
-endfunction
-function NQueens(N)
-    board = zeros(N, N);
-    
 
-    if ~solveNQueens(board, 1, N) then
-        disp("Solution does not exist.");
-    end
-endfunction
-// Example usage: Solve the 4-Queens problem
-N = 4;
-NQueens(N);
+solve_n_queens(8);
